@@ -1,7 +1,8 @@
 import { Box } from '@mui/material'
 import Head from 'next/head'
-import React, { FC } from 'react'
-import NavBar from '../ui/Navbar'
+import React from 'react'
+import Navbar from '../ui/Navbar'
+import Sidebar from '../ui/Sidebar'
 
 interface Props {
   title?: string
@@ -17,8 +18,10 @@ const Layout = ({ title = 'OpenJira', children } : Props) => {
       </Head>
 
       {/* Navbar */}
-      <NavBar />
+      <Navbar />
       {/* SideBar */}
+      <Sidebar />
+      
 
       <Box sx={{padding: '10px 20px'}}>
         { children }
