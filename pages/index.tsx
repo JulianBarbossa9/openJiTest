@@ -6,7 +6,7 @@ import Layout from '../components/layouts/Layout'
 const Home: NextPage = () => {
   return (
    <>
-    <Layout title='hey world'>
+    <Layout>
       <Typography variant='h1' color={'primary'}>Hello</Typography>
     </Layout>
    </>
