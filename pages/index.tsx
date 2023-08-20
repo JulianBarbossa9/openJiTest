@@ -1,13 +1,46 @@
-import { Typography } from '@mui/material'
-import type { NextPage } from 'next'
+import type { NextPage } from 'next' 
+import { Card, CardHeader, Grid, Typography } from '@mui/material'
 import Layout from '../components/layouts/Layout'
+import EntryList from '../components/ui/EntryList'
 
 
 const Home: NextPage = () => {
   return (
    <>
-    <Layout>
-      <Typography variant='h1' color={'primary'}>Hello</Typography>
+    <Layout title='Home - OpenJira'>
+
+      <Grid container spacing={2}>
+        <Grid item xs={ 12 } sm={ 4 }>
+          <Card sx={{ height: 'calc(100vh - 100px)'}}>
+            <CardHeader title='Pending' />
+            {/* Add new task */}
+            <EntryList status='pending'/>
+            {/* show all task */}
+
+          </Card>
+        </Grid>
+        <Grid item xs={ 12 } sm={ 4 }>
+          <Card sx={{ height: 'calc(100vh - 100px)'}}>
+            <CardHeader title='In Progress' />
+            
+            <EntryList status='in-progress'/>
+
+
+          </Card>
+        </Grid>
+        <Grid item xs={ 12 } sm={ 4 }>
+          <Card sx={{ height: 'calc(100vh - 100px)'}}>
+            <CardHeader title='Completed' />
+
+            <EntryList status='completed'/>
+
+
+          </Card>
+        </Grid>
+
+
+      </Grid>
+
     </Layout>
    </>
   )
