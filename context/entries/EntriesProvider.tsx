@@ -49,11 +49,24 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
 
  const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE)
 
+ const addNewEntry = (description: string ) => {
+    const newEntry: entry = {
+      _id: uuid4(),
+      description: description,
+      createdAt: Date.now(),
+      status: 'pending'
+    }
+
+    dispatch({ type: '[Entry] - Add new Entry', payload: newEntry})
+ }
   
 
   return (
     <EntriesContext.Provider value={{
       ...state,
+
+      //methods
+      addNewEntry,
     }}>
        { children }
     </EntriesContext.Provider>

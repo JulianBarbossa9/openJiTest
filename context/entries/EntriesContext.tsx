@@ -3,7 +3,10 @@ import { entry } from '../../interfaces';
 
 
 interface ContextProps {
-     entries: entry[]; 
+     entries: entry[]
+
+     //Methods
+     addNewEntry: (description: string) => void 
 }
 
 export const EntriesContext = createContext({} as ContextProps);
