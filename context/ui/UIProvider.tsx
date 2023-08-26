@@ -1,46 +1,53 @@
-import { FC, useReducer } from 'react';
-import { UIContext } from './UIContext';
-import { uiReducer } from './uiReducer';
-
+import { FC, useReducer } from "react";
+import { UIContext } from "./UIContext";
+import { uiReducer } from "./uiReducer";
 
 export interface UIState {
-    sideMenuOpen: boolean;
+  sideMenuOpen: boolean;
+  isAddingEntry: boolean;
 }
 
-const UI_INITIAL_STATE: UIState ={
-    sideMenuOpen: false,
-}
+const UI_INITIAL_STATE: UIState = {
+  sideMenuOpen: false,
+  isAddingEntry: false,
+};
 
 interface Props {
-    children?: React.ReactNode
+  children?: React.ReactNode;
 }
 
+const UIProvider: React.FC<Props> = ({ children }) => {
+  const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE);
 
-const UIProvider:React.FC<Props> = ({ children }) => {
+  const openSideMenu = () => {
+    dispatch({ type: "[UI] - Open SideBar" });
+  };
+
+  const closeSideMenu = () => {
+    dispatch({ type: "[UI] - Close SideBar" });
+  };
+
+  const setIsAddingEntry = (isAdding : boolean) => {
+    dispatch({ type: '[UI] - Is Adding Entry', payload: isAdding})
+  }
 
 
 
- const [state, dispatch] = useReducer(uiReducer, UI_INITIAL_STATE)
-
- const openSideMenu = () => {
-  dispatch({ type: '[UI] - Open SideBar'})
-}
-
-const closeSideMenu = () => {
-   dispatch({ type: '[UI] - Close SideBar'})
- }
   return (
-    <UIContext.Provider value={{
-      // sideMenuOpen: state.sideMenuOpen
-      ...state,
+    <UIContext.Provider
+      value={{
+        // sideMenuOpen: state.sideMenuOpen
+        ...state,
 
-      //Methods
-      openSideMenu,
-      closeSideMenu,
-    }}>
-       { children }
+        //Methods
+        openSideMenu,
+        closeSideMenu,
+        setIsAddingEntry,
+      }}
+    >
+      {children}
     </UIContext.Provider>
-   )
-}
+  );
+};
 
-export default UIProvider
+export default UIProvider;
