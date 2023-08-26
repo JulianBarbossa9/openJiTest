@@ -3,15 +3,18 @@ import React, { ChangeEvent, useContext, useState } from "react";
 import SaveOutlinedIcon from "@mui/icons-material/SaveOutlined";
 import AddCircleOutlineOutlinedIcon from "@mui/icons-material/AddCircleOutlineOutlined";
 import { EntriesContext } from "../../context/entries";
+import { UIContext } from "../../context/ui";
 
 const NewEntry = () => {
 
-  const [ addNewTask, setAddNewTask ] = useState(false)
+
+
   const [ inputValue, setinputValue ] = useState('')
   const [ touched, setTouched ] = useState(false)
 
   // This is the way that you call a context
   const { addNewEntry } = useContext(EntriesContext)
+  const { isAddingEntry, setIsAddingEntry } = useContext(UIContext)
 
   const hancleChange = (event: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setinputValue(event.target.value)
@@ -22,7 +25,7 @@ const NewEntry = () => {
     console.log({ inputValue })
     // addNewEntry
     addNewEntry(inputValue)
-    setAddNewTask(false)
+    setIsAddingEntry(false)
     setTouched(false)
     setinputValue('')
   }
@@ -32,7 +35,7 @@ const NewEntry = () => {
     <Box sx={{ marginBottom: 2, paddingX: 1 }}>
 
       {
-        addNewTask ? (
+        isAddingEntry ? (
           <>
             <TextField
               fullWidth
@@ -52,7 +55,7 @@ const NewEntry = () => {
             <Box display="flex" justifyContent=" space-between">
               <Button 
                 variant="text"
-                onClick={() => setAddNewTask(!addNewTask)}
+                onClick={() => setIsAddingEntry(!isAddingEntry)}
               >
                 Delete
               </Button>
@@ -72,7 +75,7 @@ const NewEntry = () => {
             startIcon={<AddCircleOutlineOutlinedIcon />}
             fullWidth
             variant="outlined"
-            onClick={() => setAddNewTask(!addNewTask)}
+            onClick={() => setIsAddingEntry(!isAddingEntry)}
           >
             Add new task
           </Button>
