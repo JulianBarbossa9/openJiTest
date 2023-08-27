@@ -5,7 +5,7 @@ import { UIState } from './UIProvider';
 type UIActionType = 
 | { type: '[UI] - Open SideBar'}
 | { type: '[UI] - Close SideBar'}
-| { type: '[UI] - Is Adding Entry', payload: boolean }
+| { type: '[UI] - Adding Entry', payload: boolean }
 | { type: '[UI] - Start Dragging' }
 | { type: '[UI] - End Dragging' }
 
@@ -22,7 +22,7 @@ switch(action.type) {
       ...state,
       sideMenuOpen: false,
     }
-  case '[UI] - Is Adding Entry':
+  case '[UI] - Adding Entry':
     return {
       ...state,
       isAddingEntry: action.payload,
