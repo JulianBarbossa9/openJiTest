@@ -30,7 +30,7 @@ const UIProvider: React.FC<Props> = ({ children }) => {
   };
 
   const setIsAddingEntry = (isAdding : boolean) => {
-    dispatch({ type: '[UI] - Is Adding Entry', payload: isAdding})
+    dispatch({ type: '[UI] - Adding Entry', payload: isAdding})
   }
 
   const startDragging = () => {
