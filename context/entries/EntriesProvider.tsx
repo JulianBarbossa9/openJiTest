@@ -59,6 +59,10 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
 
     dispatch({ type: '[Entry] - Add new Entry', payload: newEntry})
  }
+
+ const updateEntry = ( entry: entry) => {
+  dispatch({type: '[Entry] - Entry Update', payload: entry})
+ }
   
 
   return (
@@ -67,6 +71,7 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
 
       //methods
       addNewEntry,
+      updateEntry,
     }}>
        { children }
     </EntriesContext.Provider>
