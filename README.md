@@ -6,3 +6,9 @@ docker-compose up -d
 ```
 
 * The -d is = __detached__
+
+MongoDB url Local:
+
+```
+mongodb://localhost:27017/entriesdb
+```
