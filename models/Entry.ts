@@ -3,7 +3,7 @@ import { entry } from "../interfaces";
 
 
 
-interface IEntry extends entry{
+export interface IEntry extends entry{
 }
 
 const entrySchema = new Schema({
@@ -20,8 +20,6 @@ const entrySchema = new Schema({
 
 
 const EntryModel: Model<IEntry> = mongoose.models.Entry || mongoose.model('Entry', entrySchema)
-const entry = new EntryModel()
-
 
 
 export default EntryModel
