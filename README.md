@@ -12,3 +12,6 @@ MongoDB url Local:
 ```
 mongodb://localhost:27017/entriesdb
 ```
+
+## Config environment variables
+Rename the file __.env.template__
