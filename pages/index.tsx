@@ -6,6 +6,9 @@ import NewEntry from '../components/ui/NewEntry'
 
 
 const Home: NextPage = () => {
+  
+  // console.log(process.env.NEXT_PUBLIC_CLIENT_KEY_NEXT)
+  
   return (
    <>
     <Layout title='Home - OpenJira'>
