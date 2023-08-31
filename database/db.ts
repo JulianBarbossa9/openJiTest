@@ -12,16 +12,16 @@ const mongoConnection = {
 }
 
 export const connect = async () => {
-  console.log(mongoConnection.isConnected)
-  console.log(mongoose.connections.length)
+  // console.log(mongoConnection.isConnected)
+  // console.log(mongoose.connections.length)
   if (mongoConnection.isConnected ){
     console.log('We already conected')
     return
   }
   if (mongoose.connections.length > 0){
     mongoConnection.isConnected = mongoose.connections[0].readyState
-    console.log("state " + mongoose.connections[0].readyState)
-    console.log("connection " + mongoConnection.isConnected)
+    // console.log("state " + mongoose.connections[0].readyState)
+    // console.log("connection " + mongoConnection.isConnected)
 
     if (mongoConnection.isConnected === 1){
       console.log('Using previous conection')
