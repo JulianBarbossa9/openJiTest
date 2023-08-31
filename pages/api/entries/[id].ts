@@ -17,7 +17,9 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
   
   switch (req.method) {
     case 'PUT':
-      return updateEntry(req, res)
+      return updateEntry(req ,res)
+    case 'GET':
+      return getEntry(req ,res)
       
       default:
         return res.status(400).json({ message: 'Bad request'})
@@ -43,9 +45,42 @@ const updateEntry =async (req:NextApiRequest, res: NextApiResponse) => {
     status = entryToUpdate.status
   } = req.body 
 
-  const updatedEntry = await Entry.findByIdAndUpdate(id, { description, status }, { runValidators: true, new: true})
+  try {
+    const updatedEntry = await Entry.findByIdAndUpdate(id, { description, status }, { runValidators: true, new: true})
+    db.disconnect()
+    return res.status(200).json(updatedEntry!)
+    
+  } catch (error : any) {
+    await db.disconnect()
+    console.log({error})
+    return res.status(400).json({message: error!.errors!.status.message})
+  }
 
-  return res.status(200).json(updatedEntry!)
+  /*
+  * Another form  
+  */
+  // entryToUpdate.description = description
+  // entryToUpdate.status = status
+  // await entryToUpdate.save()
 
+}
+
+
+const getEntry =async (req: NextApiRequest, res: NextApiResponse) => {
+  const { id } = req.query
+
+  await db.connect()
+
+  const entryToGet = await Entry.findById(id)
+  
+  await db.disconnect()
+
+  if (!entryToGet) {
+    await db.disconnect()
+    return res.status(400).json({ message: 'Bad Request ' + id})
+  }
+  
+
+  return res.status(200).json( entryToGet )
 
 }
