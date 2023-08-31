@@ -25,6 +25,9 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
 
  const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE)
 
+ /**
+  * Calls to API
+  */
  const addNewEntry = async(description: string ) => {
 
   try {
@@ -42,10 +45,16 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
   //     status: 'pending'
   //   }
 
- }
+}
 
- const updateEntry = ( entry: entry) => {
-  dispatch({type: '[Entry] - Entry Update', payload: entry})
+ const updateEntry = async( {_id, description, status}: entry) => {
+   try {
+    const { data } = await entriesApi.put<entry>(`/entries/${_id}`, {description: description, status: status})
+    dispatch({type: '[Entry] - Entry Update', payload: data })
+    
+  } catch (error: any) {
+    console.log({error})
+  }
  }
 
  const refreshEntries =async () => {
