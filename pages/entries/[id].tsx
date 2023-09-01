@@ -1,13 +1,46 @@
-import React from 'react'
+import React, { ChangeEvent, FC, useMemo, useState } from 'react'
+import { GetServerSideProps } from 'next'
 import Layout from '../../components/layouts/Layout'
 import { capitalize, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, IconButton } from '@mui/material'
-import { statusType } from '../../interfaces'
+import { entry, statusType } from '../../interfaces'
 import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
+import { isValidObjectId } from 'mongoose'
+import { dbEntris } from '../../database'
 
 const validStatus: statusType[] = ['pending', 'in-progress', 'completed']
 
-const EntryPage = () => {
+
+interface Props {
+  returnEntry: entry
+}
+
+const EntryPage:FC<Props> = ( props ) => {
+  
+  console.log({props})
+  
+  const [ inputValue, setInputValue ] = useState('')
+  const [ status, setStatus ] = useState<statusType>('pending')
+  const [ isTouched, setIsTouched ] = useState(false)
+
+  const onInputValueChanged = (event:ChangeEvent<HTMLInputElement>) => {
+    setInputValue(event.target.value)
+  }
+  
+  const onStatusChanged = (event:ChangeEvent<HTMLInputElement>) => {
+    setStatus(event.target.value as statusType)
+  }
+
+  const onSave = () => {
+    console.log({ inputValue, status })
+  }
+  
+  const isNotValid = useMemo( () => 
+    inputValue.length <= 0 && isTouched
+  ,[inputValue, isTouched])
+  
+  
+  
   return (
     <Layout title='...'>
       <Grid
@@ -18,7 +51,7 @@ const EntryPage = () => {
         <Grid item xs={ 12 } sm={ 8 } md={ 6 }>
           <Card>
             <CardHeader 
-              title='Entry'
+              title={`Entry: ${ inputValue }`}
               subheader={`Create new entry`}
             />
             <CardContent>
@@ -29,12 +62,19 @@ const EntryPage = () => {
                 autoFocus
                 multiline
                 label='New Entry'
+                value={ inputValue }
+                onBlur={ () => setIsTouched(true)}
+                onChange={ onInputValueChanged }
+                helperText= { isNotValid && 'Add a input' }
+                error= { isNotValid }
               />
 
               <FormControl>
                 <FormLabel> Status: </FormLabel>
                 <RadioGroup
                   row
+                  value={ status }
+                  onChange={ onStatusChanged }
                 >
                   {
                     validStatus.map(option => (
@@ -55,6 +95,8 @@ const EntryPage = () => {
                 startIcon={<SaveOutlinedIcon />}
                 variant='contained'
                 fullWidth
+                onClick={ onSave }
+                disabled={ inputValue.length <= 0 ? true : false }
               >
                 Save
               </Button>
@@ -72,6 +114,45 @@ const EntryPage = () => {
 
     </Layout>
   )
+}
+
+
+// You should use getServerSideProps when:
+// - Only if you need to pre-render a page whose data must be fetched at request time
+
+export const getServerSideProps: GetServerSideProps = async ({ params}) => {
+  
+ const { id } = params as {id : string}
+
+ const returnEntry = await dbEntris.getEntryById(id)
+
+ //with this we remove the user if the id does not exist
+ //  if (!isValidObjectId(id)){
+ //   return {
+ //     redirect:{
+ //       destination: '/',
+ //       permanent: false
+ //     }
+ //   }
+ //  }
+ //If returnentry comes empty redicect to home
+ if (!returnEntry){
+  return {
+    redirect:{
+      destination: '/',
+      permanent: false
+    }
+  }
+ }
+
+  return {
+    //This props will return in this component
+    props: {
+      returnEntry: returnEntry.description
+      // name: 'Julian',
+      // lastName: 'Barbosa'
+    }
+  }
 }
 
 export default EntryPage
