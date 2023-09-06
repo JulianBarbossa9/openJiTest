@@ -4,6 +4,7 @@ import { v4 as uuid4 } from 'uuid'
 import { entriesReducer } from './entriesReducer';
 import { entry } from '../../interfaces';
 import { entriesApi } from '../../apis';
+import { useSnackbar } from 'notistack'
 
 
 export interface EntriesState {
@@ -24,6 +25,7 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
 
 
  const [state, dispatch] = useReducer(entriesReducer, Entries_INITIAL_STATE)
+ const { enqueueSnackbar } = useSnackbar()
 
  /**
   * Calls to API
@@ -37,20 +39,27 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
   } catch (error) {
     console.log(error)
   }
-    
-  // const newEntry: entry = {
-  //     _id: uuid4(),
-  //     description: description,
-  //     createdAt: Date.now(),
-  //     status: 'pending'
-  //   }
 
 }
 
- const updateEntry = async( {_id, description, status}: entry) => {
+ const updateEntry = async( {_id, description, status}: entry, showSnackbar = false) => {
    try {
     const { data } = await entriesApi.put<entry>(`/entries/${_id}`, {description: description, status: status})
     dispatch({type: '[Entry] - Entry Update', payload: data })
+
+    if ( showSnackbar ) {
+
+      enqueueSnackbar('Entry is updated',{
+        variant: 'success',
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      })
+    }
+
+
     
   } catch (error: any) {
     console.log({error})
@@ -59,9 +68,29 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
 
  const refreshEntries =async () => {
   const { data } = await entriesApi.get<entry[]>('/entries')
-  // console.log(response)
   dispatch({ type: '[Entry] - Refresh Data', payload: data})
 
+ }
+
+ const deleteEntry = async (_id: string, showSnackBar = false) => {
+  
+  try {
+    const { data } = await entriesApi.delete<entry>(`/entries/${_id}`)
+    dispatch({ type: '[Entry] - Delete Entry', payload: data})
+    
+    if( showSnackBar ) {
+      enqueueSnackbar('Entry is deleted',{
+        variant: 'success',
+        autoHideDuration: 1500,
+        anchorOrigin: {
+          vertical: 'top',
+          horizontal: 'right'
+        }
+      })
+    }
+  } catch (error) {
+    console.error({error})
+  }
  }
 
  useEffect(() => {
@@ -76,6 +105,7 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
       //methods
       addNewEntry,
       updateEntry,
+      deleteEntry,
     }}>
        { children }
     </EntriesContext.Provider>
