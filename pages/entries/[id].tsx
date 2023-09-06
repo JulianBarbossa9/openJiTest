@@ -10,6 +10,7 @@ import { dbEntris } from '../../database'
 import { EntriesContext } from '../../context/entries'
 import entries from '../api/entries'
 import { useRouter } from 'next/router'
+import { dateFunction } from '../../utils'
 
 const validStatus: statusType[] = ['pending', 'in-progress', 'completed']
 
@@ -49,6 +50,7 @@ const EntryPage:FC<Props> = ( { returnEntry } ) => {
     }
 
     updateEntry(updatedEntry, true)
+    router.push('/')
   }
 
   const handleDelete = () => {
@@ -73,7 +75,7 @@ const EntryPage:FC<Props> = ( { returnEntry } ) => {
           <Card>
             <CardHeader 
               title={`Entry :`}
-              subheader={`Create new entry`}
+              subheader={`Create ${dateFunction.getFormatDistanceToNow(returnEntry.createdAt)}`}
             />
             <CardContent>
               <TextField 
