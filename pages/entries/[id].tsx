@@ -1,4 +1,4 @@
-import React, { ChangeEvent, FC, useMemo, useState } from 'react'
+import React, { ChangeEvent, FC, useContext, useMemo, useState } from 'react'
 import { GetServerSideProps } from 'next'
 import Layout from '../../components/layouts/Layout'
 import { capitalize, Button, Card, CardActions, CardContent, CardHeader, FormControl, FormControlLabel, FormLabel, Grid, Radio, RadioGroup, TextField, IconButton } from '@mui/material'
@@ -7,6 +7,9 @@ import SaveOutlinedIcon from '@mui/icons-material/SaveOutlined'
 import DeleteOutlinedIcon from '@mui/icons-material/DeleteOutlined'
 import { isValidObjectId } from 'mongoose'
 import { dbEntris } from '../../database'
+import { EntriesContext } from '../../context/entries'
+import entries from '../api/entries'
+import { useRouter } from 'next/router'
 
 const validStatus: statusType[] = ['pending', 'in-progress', 'completed']
 
@@ -15,12 +18,14 @@ interface Props {
   returnEntry: entry
 }
 
-const EntryPage:FC<Props> = ( props ) => {
+const EntryPage:FC<Props> = ( { returnEntry } ) => {
   
-  console.log({props})
+  console.log({ returnEntry })
+
+  const { updateEntry, deleteEntry } = useContext(EntriesContext)
   
-  const [ inputValue, setInputValue ] = useState('')
-  const [ status, setStatus ] = useState<statusType>('pending')
+  const [ inputValue, setInputValue ] = useState(returnEntry.description)
+  const [ status, setStatus ] = useState<statusType>(returnEntry.status)
   const [ isTouched, setIsTouched ] = useState(false)
 
   const onInputValueChanged = (event:ChangeEvent<HTMLInputElement>) => {
@@ -31,8 +36,24 @@ const EntryPage:FC<Props> = ( props ) => {
     setStatus(event.target.value as statusType)
   }
 
+  const router = useRouter()
+
   const onSave = () => {
-    console.log({ inputValue, status })
+    if (inputValue.trim().length === 0) return 0
+    
+    //set the entry to update
+    const updatedEntry: entry = {
+      ...returnEntry,
+      status: status,
+      description: inputValue
+    }
+
+    updateEntry(updatedEntry, true)
+  }
+
+  const handleDelete = () => {
+    deleteEntry(returnEntry._id, true)
+    router.push('/')
   }
   
   const isNotValid = useMemo( () => 
@@ -42,7 +63,7 @@ const EntryPage:FC<Props> = ( props ) => {
   
   
   return (
-    <Layout title='...'>
+    <Layout title={inputValue.substring(0.20) + '...'}>
       <Grid
         container
         justifyContent='center'
@@ -51,7 +72,7 @@ const EntryPage:FC<Props> = ( props ) => {
         <Grid item xs={ 12 } sm={ 8 } md={ 6 }>
           <Card>
             <CardHeader 
-              title={`Entry: ${ inputValue }`}
+              title={`Entry :`}
               subheader={`Create new entry`}
             />
             <CardContent>
@@ -107,6 +128,7 @@ const EntryPage:FC<Props> = ( props ) => {
 
       <IconButton
         sx={{ position: 'fixed', bottom: 30, right: 30, backgroundColor: 'red'}}
+        onClick ={ handleDelete }
       >
         <DeleteOutlinedIcon />
       </IconButton>
@@ -148,9 +170,7 @@ export const getServerSideProps: GetServerSideProps = async ({ params}) => {
   return {
     //This props will return in this component
     props: {
-      returnEntry: returnEntry.description
-      // name: 'Julian',
-      // lastName: 'Barbosa'
+      returnEntry: returnEntry
     }
   }
 }
