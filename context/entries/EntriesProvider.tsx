@@ -1,6 +1,5 @@
 import { FC, useEffect, useReducer } from 'react';
 import { EntriesContext } from './EntriesContext';
-import { v4 as uuid4 } from 'uuid'
 import { entriesReducer } from './entriesReducer';
 import { entry } from '../../interfaces';
 import { entriesApi } from '../../apis';
@@ -58,7 +57,7 @@ const EntriesProvider:React.FC<Props> = ({ children }) => {
         }
       })
     }
-
+    
 
     
   } catch (error: any) {
