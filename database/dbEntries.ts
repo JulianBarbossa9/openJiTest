@@ -12,5 +12,6 @@ export const getEntryById =async (id:string): Promise<entry | null> => {
   const entry = await Entry.findById(id).lean()
   await db.disconnect()
 
-  return entry
+  //update type of serializer of mongoose
+  return JSON.parse(JSON.stringify(entry))
 }
