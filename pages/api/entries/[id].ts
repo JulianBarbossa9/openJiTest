@@ -20,6 +20,8 @@ export default function handler(req: NextApiRequest, res: NextApiResponse<Data>)
       return updateEntry(req ,res)
     case 'GET':
       return getEntry(req ,res)
+    case 'DELETE':
+      return deleteEntry(req ,res)
       
       default:
         return res.status(400).json({ message: 'Bad request'})
@@ -82,5 +84,24 @@ const getEntry =async (req: NextApiRequest, res: NextApiResponse) => {
   
 
   return res.status(200).json( entryToGet )
+
+}
+
+const deleteEntry = async (req: NextApiRequest, res: NextApiResponse) => {
+  const { id } = req.query
+
+  await db.connect()
+
+  try {
+    const entryToDelete = await Entry.findByIdAndDelete(id)
+    await db.disconnect()
+    return res.status(200).json(entryToDelete)
+  } catch (error: any) {
+    await db.disconnect()
+    console.log({error})
+    res.status(400).json({message: error!.errors!.status.message})
+  }
+
+
 
 }
